@@ -38,6 +38,8 @@ def guardarPersonas():
     print("Guardo a los jugadores")
     cadena = json.dumps([vars(persona) for persona in personas])
     print(cadena)
+    archivo=open("jugadores.json",'w')
+    archivo.write(cadena)
     
 
 
