@@ -13,7 +13,9 @@ class Persona:
         self.posy = random.randint(0,800)
         self.radio=30
         self.direccion = random.randint(0, 360)
-        self.color = "blue"
+        #Los colores se cogen aleatoriamente de varios colores posibles
+        colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
+        self.color = random.choice (colores)
         self.entidad = ""
     def dibuja(self):
         self.entidad = lienzo.create_oval(
@@ -55,19 +57,22 @@ boton = tk.Button(raiz, text = "Guardar", command = guardarPersonas)
 boton.pack()
 
 #Cargar personas desde el disco duro
-carga = open("jugadores.json",'r')
-cargado = carga.read()
-cargadolista = json.loads(cargado)
-print("es:" + cargado)
-numeropersonas= len (cargadolista)
-print(numeropersonas)
-for elemento in cargadolista:
-    print(elemento)
+try:
+    carga = open("jugadores.json",'r')
+    cargado = carga.read()
+    cargadolista = json.loads(cargado)
+    for elemento in cargadolista:
+        persona= Persona()
+        persona.__dict__.update(elemento)
+        personas.append(persona)
+except:
+    print("error")
+    
     
 
 #En la colección introduzco instancias de persoans
 if len(personas) == 0:
-    numeropersonas = len(personas)
+    numeropersonas = 500
     for i in range(0, numeropersonas):
         personas.append(Persona())
 
@@ -78,8 +83,8 @@ for persona in personas:
 #Creo un bucle repetitivo
 def bucle():
     #Muevo cada persona de la colección
-    for persona in personas:
-        persona.mueve()
+    for Persona in personas:
+        Persona.mueve()
     raiz.after(10,bucle)
 
 #Ejecuto el bucle
