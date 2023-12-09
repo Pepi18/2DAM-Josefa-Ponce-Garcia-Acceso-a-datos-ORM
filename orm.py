@@ -4,7 +4,7 @@ import math
 import json
 
 personas= []
-numeropersonas = 20
+numeropersonas = 5
 
 class Persona:
 
@@ -31,7 +31,7 @@ class Persona:
         self.posx += math.cos(self.direccion)
         self.posy +=math.sin(self.direccion)
     def colisiona(self):
-        if self.posx < 0 or self.posx > 1024 or self.posy < 0 or self.posy > 1024:
+        if self.posx < 0 or self.posx > 800 or self.posy < 0 or self.posy > 800:
             self.direccion += math.pi
             
 def guardarPersonas():
@@ -53,9 +53,23 @@ lienzo.pack()
 #Botón guardar
 boton = tk.Button(raiz, text = "Guardar", command = guardarPersonas)
 boton.pack()
+
+#Cargar personas desde el disco duro
+carga = open("jugadores.json",'r')
+cargado = carga.read()
+cargadolista = json.loads(cargado)
+print("es:" + cargado)
+numeropersonas= len (cargadolista)
+print(numeropersonas)
+for elemento in cargadolista:
+    print(elemento)
+    
+
 #En la colección introduzco instancias de persoans
-for i in range(0, numeropersonas):
-    personas.append(Persona())
+if len(personas) == 0:
+    numeropersonas = len(personas)
+    for i in range(0, numeropersonas):
+        personas.append(Persona())
 
 ## Pinto en la interfaz a cada persona de la colección
 for persona in personas:
@@ -75,3 +89,7 @@ bucle()
 
 
 raiz.mainloop()
+
+
+
+
