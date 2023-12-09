@@ -9,14 +9,16 @@ numeropersonas = 5
 class Persona:
 
     def __init__(self):
-        self.posx = random.randint(0,800)
-        self.posy = random.randint(0,800)
+        self.posx = random.randint(0,950)
+        self.posy = random.randint(0,950)
         self.radio=30
         self.direccion = random.randint(0, 360)
         #Los colores se cogen aleatoriamente de varios colores posibles
         colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
         self.color = random.choice (colores)
         self.entidad = ""
+        #Añado velocidad
+        self.velocidad = 0.5
     def dibuja(self):
         self.entidad = lienzo.create_oval(
             self.posx-self.radio/2,
@@ -28,12 +30,12 @@ class Persona:
         self.colisiona()
         lienzo.move(
             self.entidad,
-            math.cos(self.direccion),
-            math.sin(self.direccion))
+            math.cos(self.direccion) * self.velocidad,
+            math.sin(self.direccion)* self.velocidad)
         self.posx += math.cos(self.direccion)
         self.posy +=math.sin(self.direccion)
     def colisiona(self):
-        if self.posx < 0 or self.posx > 800 or self.posy < 0 or self.posy > 800:
+        if self.posx < 0 or self.posx > 950 or self.posy < 0 or self.posy > 950:
             self.direccion += math.pi
             
 def guardarPersonas():
@@ -49,7 +51,7 @@ def guardarPersonas():
 raiz = tk.Tk()
 
 #En la ventana creo un lienzo
-lienzo = tk.Canvas(raiz, width=800, height=800)
+lienzo = tk.Canvas(raiz, width=950, height=950)
 lienzo.pack()
 
 #Botón guardar
@@ -72,7 +74,7 @@ except:
 
 #En la colección introduzco instancias de persoans
 if len(personas) == 0:
-    numeropersonas = 500
+    numeropersonas = 700
     for i in range(0, numeropersonas):
         personas.append(Persona())
 
