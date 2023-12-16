@@ -75,32 +75,30 @@ lienzo.pack()
 boton = tk.Button(raiz, text = "Guardar", command = guardarPersonas)
 boton.pack()
 
-#Cargar personas desde el disco duro
+#Cargar personas desde SQL
 try:
-    carga = open("jugadores.json",'r')
-    cargado = carga.read()
-    cargadolista = json.loads(cargado)
-    for elemento in cargadolista:
+    conexion = sqlite3.connect("jugadroes.sqlite3")
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT * FROM jugadores")
+    while True:
+        fila = cursor.fetchone()
+        if fila is None:
+            break
+        #print(fila)
         persona= Persona()
-        persona.__dict__.update(elemento)
+        persona.pox = fila[1]
+        persona.poy = fila[2]
+        persona.radio = fila[3]
+        persona.direccion = fila[4]
+        persona.color = fila[5]
+        persona.entidad= fila[6]
+        persona.velocidad = fila[7]
         personas.append(persona)
+        
+    conexion.close()   
 except:
-    print("error")
-#Cargar personas desde SQL    
-conexion = sqlite3.connect("jugadroes.sqlite3")
-cursor = conexion.cursor()
-
-cursor.execute("SELECT * FROM jugadores")
-while True:
-    fila = cursor.fetchone()
-    if fila is None:
-        break
-    print(fila)
-    
-
-
-conexion.close()   
-
+    print("error al leer base de datos")
 #En la colección introduzco instancias de persoans
 if len(personas) == 0:
     numeropersonas = 300
