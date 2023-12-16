@@ -42,11 +42,6 @@ class Persona:
             
 def guardarPersonas():
     print("Guardo a los jugadores")
-    #Guardo archivo json
-    cadena = json.dumps([vars(persona) for persona in personas])
-    print(cadena)
-    archivo=open("jugadores.json",'w')
-    archivo.write(cadena)
     #Guardo los personajes en SQL
     conexion = sqlite3.connect("jugadroes.sqlite3")
     cursor = conexion.cursor()
@@ -91,8 +86,20 @@ try:
         personas.append(persona)
 except:
     print("error")
+#Cargar personas desde SQL    
+conexion = sqlite3.connect("jugadroes.sqlite3")
+cursor = conexion.cursor()
+
+cursor.execute("SELECT * FROM jugadores")
+while True:
+    fila = cursor.fetchone()
+    if fila is None:
+        break
+    print(fila)
     
-    
+
+
+conexion.close()   
 
 #En la colección introduzco instancias de persoans
 if len(personas) == 0:
