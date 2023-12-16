@@ -103,7 +103,11 @@ def guardarPersonas():
             '''+str(persona.direccion)+''',
             "'''+str(persona.color)+'''",
             "'''+str(persona.entidad)+'''",
-            '''+str(persona.velocidad)+'''
+            '''+str(persona.velocidad)+''',
+            '''+str(persona.energia)+''',
+            '''+str(persona.descanso)+''',
+            "'''+str(persona.entidadenergia)+'''",
+            "'''+str(persona.entidaddescanso)+'''"
         )
         ''')
     
@@ -144,6 +148,10 @@ try:
         persona.color = fila[5]
         persona.entidad= fila[6]
         persona.velocidad = fila[7]
+        persona.energia = fila[8]
+        persona.descanso = fila[9]
+        persona.entidadenergia= fila[10]
+        persona.entidaddescanso = fila[11]        
         personas.append(persona)
         
     conexion.close()   
