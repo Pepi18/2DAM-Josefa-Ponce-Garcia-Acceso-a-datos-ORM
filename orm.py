@@ -51,19 +51,30 @@ class Persona:
             
         
     def mueve(self):
+        if self.energia > 0:
+            self.energia -= 0.1
+        if self.descanso > 0:
+            self.descanso -= 0.1
         self.colisiona()
         lienzo.move(
             self.entidad,
             math.cos(self.direccion) * self.velocidad,
             math.sin(self.direccion)* self.velocidad)
-        lienzo.move(
+        lienzo.coords(
             self.entidadenergia,
-            math.cos(self.direccion) * self.velocidad,
-            math.sin(self.direccion)* self.velocidad)
-        lienzo.move(
+            self.posx-self.radio/2,
+            self.posy-self.radio/2-16,
+            self.posx+self.radio/2-(100-self.energia),
+            self.posy-self.radio/2-14
+        )
+        lienzo.coords(
             self.entidaddescanso,
-            math.cos(self.direccion) * self.velocidad,
-            math.sin(self.direccion)* self.velocidad)
+            self.posx-self.radio/2,
+            self.posy-self.radio/2-10,
+            self.posx+self.radio/2-(100-self.descanso),
+            self.posy-self.radio/2-8
+        )
+        
         self.posx += math.cos(self.direccion)
         self.posy +=math.sin(self.direccion)
     def colisiona(self):
