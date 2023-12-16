@@ -18,7 +18,7 @@ class Persona:
         self.color = random.choice (colores)
         self.entidad = ""
         #Añado velocidad
-        self.velocidad = 0.5
+        self.velocidad = 2
     def dibuja(self):
         self.entidad = lienzo.create_oval(
             self.posx-self.radio/2,
@@ -74,7 +74,7 @@ except:
 
 #En la colección introduzco instancias de persoans
 if len(personas) == 0:
-    numeropersonas = 700
+    numeropersonas = 300
     for i in range(0, numeropersonas):
         personas.append(Persona())
 
