@@ -11,16 +11,21 @@ numeropersonas = 5
 class Persona:
 
     def __init__(self):
-        self.posx = random.randint(0,950)
-        self.posy = random.randint(0,950)
+        self.posx = random.randint(0,1024)
+        self.posy = random.randint(0,1024)
         self.radio=30
-        self.direccion = random.randint(0, 360)
+        self.direccion = random.randint(0,360)
         #Los colores se cogen aleatoriamente de varios colores posibles
         colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
         self.color = random.choice (colores)
         self.entidad = ""
+        self.energia = 100
+        self.descanso = 100
+        self.entidadenergia = ""
+        self.entidaddescanso= "" 
+        
         #Añado velocidad
-        self.velocidad = 2
+        self.velocidad = 1
     def dibuja(self):
         self.entidad = lienzo.create_oval(
             self.posx-self.radio/2,
@@ -28,23 +33,52 @@ class Persona:
             self.posx+self.radio/2,
             self.posy+self.radio/2,
             fill =self.color)
+        self.entidadenergia = lienzo.create_rectangle(
+            self.posx-self.radio/2,
+            self.posy-self.radio/2-16,
+            self.posx+self.radio/2,
+            self.posy-self.radio/2-14,
+            fill ="green"
+            )
+        self.entidaddescanso = lienzo.create_rectangle(
+            self.posx-self.radio/2,
+            self.posy-self.radio/2-10,
+            self.posx+self.radio/2,
+            self.posy-self.radio/2-8,
+            fill ="blue"
+            )
+
+            
+        
     def mueve(self):
         self.colisiona()
         lienzo.move(
             self.entidad,
             math.cos(self.direccion) * self.velocidad,
             math.sin(self.direccion)* self.velocidad)
+        lienzo.move(
+            self.entidadenergia,
+            math.cos(self.direccion) * self.velocidad,
+            math.sin(self.direccion)* self.velocidad)
+        lienzo.move(
+            self.entidaddescanso,
+            math.cos(self.direccion) * self.velocidad,
+            math.sin(self.direccion)* self.velocidad)
         self.posx += math.cos(self.direccion)
         self.posy +=math.sin(self.direccion)
     def colisiona(self):
-        if self.posx < 0 or self.posx > 950 or self.posy < 0 or self.posy > 950:
+        if self.posx < 0 or self.posx > 1024 or self.posy < 0 or self.posy > 1024:
             self.direccion += math.pi
             
 def guardarPersonas():
     print("Guardo a los jugadores")
     #Guardo los personajes en SQL
-    conexion = sqlite3.connect("jugadroes.sqlite3")
+    conexion = sqlite3.connect("jugadores.sqlite3")
     cursor = conexion.cursor()
+    cursor.execute('''
+            DELETE FROM jugadores
+            ''')
+    conexion.commit()
     for persona in personas:
         cursor.execute('''
         INSERT INTO jugadores
@@ -68,7 +102,7 @@ def guardarPersonas():
 raiz = tk.Tk()
 
 #En la ventana creo un lienzo
-lienzo = tk.Canvas(raiz, width=950, height=950)
+lienzo = tk.Canvas(raiz, width=1024, height=924)
 lienzo.pack()
 
 #Botón guardar
@@ -77,10 +111,13 @@ boton.pack()
 
 #Cargar personas desde SQL
 try:
-    conexion = sqlite3.connect("jugadroes.sqlite3")
+    conexion = sqlite3.connect("jugadores.sqlite3")
     cursor = conexion.cursor()
 
-    cursor.execute("SELECT * FROM jugadores")
+    cursor.execute('''SELECT *
+                      FROM jugadores
+                                     
+                      ''')
     while True:
         fila = cursor.fetchone()
         if fila is None:
