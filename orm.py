@@ -22,44 +22,58 @@ class Persona:
         self.energia = 100
         self.descanso = 100
         self.entidadenergia = ""
-        self.entidaddescanso= "" 
-        
+        self.entidaddescanso= ""
+        #Añado experiencia
+        self.experiencia = 0
+        self.entidadexperiencia = ""
         #Añado velocidad
-        self.velocidad = 1
+        self.velocidad = 2
     def dibuja(self):
         self.entidad = lienzo.create_oval(
             self.posx-self.radio/2,
             self.posy-self.radio/2,
             self.posx+self.radio/2,
             self.posy+self.radio/2,
-            fill =self.color)
+            fill =self.color
+            )
         self.entidadenergia = lienzo.create_rectangle(
             self.posx-self.radio/2,
             self.posy-self.radio/2-16,
             self.posx+self.radio/2,
             self.posy-self.radio/2-14,
-            fill ="green"
+            fill ="green yellow"
             )
         self.entidaddescanso = lienzo.create_rectangle(
             self.posx-self.radio/2,
             self.posy-self.radio/2-10,
             self.posx+self.radio/2,
             self.posy-self.radio/2-8,
-            fill ="blue"
+            fill ="blue2"
             )
-
-            
+        self.entidadexperiencia = lienzo.create_rectangle(
+            self.posx-self.radio/2,
+            self.posy-self.radio/2-22,
+            self.posx+self.radio/2,
+            self.posy-self.radio/2-20,
+            fill ="mediumorchid1"
+            )
+        
         
     def mueve(self):
         if self.energia > 0:
-            self.energia -= 0.1
+            self.energia -= 0.3
         if self.descanso > 0:
-            self.descanso -= 0.1
+            self.descanso -= 0.3
         self.colisiona()
+        if self.experiencia < 100:
+            self.experiencia +=0.3                    
+        
         lienzo.move(
             self.entidad,
             math.cos(self.direccion) * self.velocidad,
             math.sin(self.direccion)* self.velocidad)
+
+        
         anchuraenergia = (self.energia/100)*self.radio
         lienzo.coords(
             self.entidadenergia,
@@ -76,13 +90,27 @@ class Persona:
             self.posx - self.radio/2 + anchuradescanso,
             self.posy - self.radio/2-8
         )
+
+        anchuraexperiencia = (self.experiencia/100)*self.radio
+        lienzo.coords(
+            self.entidadexperiencia,
+            self.posx - self.radio/2,
+            self.posy - self.radio/2-22,
+            self.posx - self.radio/2 + anchuraexperiencia,
+            self.posy - self.radio/2-20
+        )
+
+        
         
         self.posx += math.cos(self.direccion)
         self.posy +=math.sin(self.direccion)
+ 
+        
     def colisiona(self):
         if self.posx < 0 or self.posx > 1024 or self.posy < 0 or self.posy > 1024:
             self.direccion += math.pi
             
+    
 def guardarPersonas():
     print("Guardo a los jugadores")
     #Guardo los personajes en SQL
@@ -107,7 +135,10 @@ def guardarPersonas():
             '''+str(persona.energia)+''',
             '''+str(persona.descanso)+''',
             "'''+str(persona.entidadenergia)+'''",
-            "'''+str(persona.entidaddescanso)+'''"
+            "'''+str(persona.entidaddescanso)+'''",
+            '''+str(persona.experiencia)+''',
+            "'''+str(persona.entidadexperiencia)+'''"
+
         )
         ''')
     
@@ -151,7 +182,9 @@ try:
         persona.energia = fila[8]
         persona.descanso = fila[9]
         persona.entidadenergia= fila[10]
-        persona.entidaddescanso = fila[11]        
+        persona.entidaddescanso = fila[11]
+        persona.experiencia = fila[12]
+        persona.entidadexperiencia = fila[13]
         personas.append(persona)
         
     conexion.close()   
