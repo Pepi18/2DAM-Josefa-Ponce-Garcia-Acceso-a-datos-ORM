@@ -6,18 +6,31 @@ import sqlite3
 
 #Declaración de variables globales
 personas= []
-numeropersonas = 5
-
-class Persona:
-
+numeropersonas = 50
+class Entidad:
     def __init__(self):
         self.posx = random.randint(0,1024)
         self.posy = random.randint(0,1024)
+        colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
+        self.color = random.choice (colores)
+class Recogible(Entidad):
+    def __init__(self):
+        super().__init__()
+        #pass
+    def serializar(self):
+        recogible_serializado ={
+            "posx":self.posx,
+            "posy":self.posy,
+            "color":self.color
+            }
+        return recogible_serializado
+            
+class Persona(Entidad):
+    def __init__(self):
+        super().__init__()
         self.radio=30
         self.direccion = random.randint(0,360)
         #Los colores se cogen aleatoriamente de varios colores posibles
-        colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
-        self.color = random.choice (colores)
         self.entidad = ""
         self.energia = 100
         self.descanso = 100
@@ -28,6 +41,8 @@ class Persona:
         self.entidadexperiencia = ""
         #Añado velocidad
         self.velocidad = 2
+        self.inventario = []
+        self.inventario.append(Recogible())
     def dibuja(self):
         self.entidad = lienzo.create_oval(
             self.posx-self.radio/2,
@@ -109,10 +124,31 @@ class Persona:
     def colisiona(self):
         if self.posx < 0 or self.posx > 1024 or self.posy < 0 or self.posy > 1024:
             self.direccion += math.pi
-            
+    def serializar(self):
+        persona_serializada ={
+            "posx":self.posx,
+            "posy":self.posy,
+            "radio":self.radio,
+            "direccion":self.direccion,
+            "color":self.color,
+            "entidad":self.entidad,
+            "velocidad":self.velocidad,
+            "energia":self.energia,
+            "descanso":self.descanso,
+            "experiencia":self.experiencia,
+            "inventario":[item.serializar() for item in self.inventario]
+            }
+        return persona_serializada
     
 def guardarPersonas():
     print("Guardo a los jugadores")
+    
+    #También guardo en json con fines demostrativos
+    personas_serializadas =[persona.serializar() for persona in personas]
+    cadena = json.dumps(personas_serializadas)
+    archivo = open("jugadores.json",'w')
+    archivo.write(cadena)
+    
     #Guardo los personajes en SQL
     conexion = sqlite3.connect("jugadores.sqlite3")
     cursor = conexion.cursor()
@@ -137,7 +173,8 @@ def guardarPersonas():
             "'''+str(persona.entidadenergia)+'''",
             "'''+str(persona.entidaddescanso)+'''",
             '''+str(persona.experiencia)+''',
-            "'''+str(persona.entidadexperiencia)+'''"
+            "'''+str(persona.entidadexperiencia)+'''",
+            "'''+str(persona.inventario)+'''"
 
         )
         ''')
@@ -172,8 +209,8 @@ try:
             break
         #print(fila)
         persona= Persona()
-        persona.pox = fila[1]
-        persona.poy = fila[2]
+        persona.posx = fila[1]
+        persona.posy = fila[2]
         persona.radio = fila[3]
         persona.direccion = fila[4]
         persona.color = fila[5]

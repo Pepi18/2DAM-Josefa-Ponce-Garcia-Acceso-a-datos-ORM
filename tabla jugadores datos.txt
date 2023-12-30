@@ -1,0 +1,16 @@
+CREATE TABLE "jugadores" (
+	"id"	INTEGER,
+	"posx"	NUMERIC,
+	"posy"	NUMERIC,
+	"radio"	NUMERIC,
+	"direccion"	NUMERIC,
+	"color"	TEXT,
+	"entidad"	TEXT,
+	"velocidad"	INTEGER,
+	"energia"	INTEGER,
+	"descanso"	NUMERIC,
+	"entidadenergia"	TEXT,
+	"entidaddescanso"	TEXT,
+	"experiencia"	NUMERIC,
+	"entidadexperiencia"	TEXT
+)
