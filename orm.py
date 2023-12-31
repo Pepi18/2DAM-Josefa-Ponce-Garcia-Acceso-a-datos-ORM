@@ -7,16 +7,13 @@ import sqlite3
 #Declaración de variables globales
 personas= []
 numeropersonas = 50
-class Entidad:
+
+class Recogible():
     def __init__(self):
         self.posx = random.randint(0,1024)
         self.posy = random.randint(0,1024)
         colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
         self.color = random.choice (colores)
-class Recogible(Entidad):
-    def __init__(self):
-        super().__init__()
-        #pass
     def serializar(self):
         recogible_serializado ={
             "posx":self.posx,
@@ -25,12 +22,15 @@ class Recogible(Entidad):
             }
         return recogible_serializado
             
-class Persona(Entidad):
+class Persona():
     def __init__(self):
-        super().__init__()
+        self.posx = random.randint(0,1024)
+        self.posy = random.randint(0,1024)
         self.radio=30
         self.direccion = random.randint(0,360)
         #Los colores se cogen aleatoriamente de varios colores posibles
+        colores = ["turquoise", "SteelBlue", "LightGreen", "sky blue", "aquamarine", "DeepPink", "pink", "violet"]
+        self.color = random.choice (colores)
         self.entidad = ""
         self.energia = 100
         self.descanso = 100
@@ -42,7 +42,9 @@ class Persona(Entidad):
         #Añado velocidad
         self.velocidad = 2
         self.inventario = []
-        self.inventario.append(Recogible())
+        for i in range(0,10):
+            self.inventario.append(Recogible())
+        
     def dibuja(self):
         self.entidad = lienzo.create_oval(
             self.posx-self.radio/2,
@@ -145,9 +147,11 @@ def guardarPersonas():
     
     #También guardo en json con fines demostrativos
     personas_serializadas =[persona.serializar() for persona in personas]
-    cadena = json.dumps(personas_serializadas)
-    archivo = open("jugadores.json",'w')
-    archivo.write(cadena)
+##    cadena = json.dumps(personas_serializadas)
+##    archivo = open("jugadores.json",'w')
+##    archivo.write(cadena)
+    with open("jugadores.json",'w') as archivo:
+        json.dump(personas_serializadas,archivo,indent=4)
     
     #Guardo los personajes en SQL
     conexion = sqlite3.connect("jugadores.sqlite3")
@@ -178,6 +182,20 @@ def guardarPersonas():
 
         )
         ''')
+    for recogible in persona.inventario:
+        peticion = '''
+        INSERT INTO recogible
+        VALUES(
+            NULL,
+            '''+str(persona.entidad)+''',
+            "'''+str(recogible.posx)+'''",
+            "'''+str(recogible.posy)+'''",
+            "'''+str(recogible.color)+'''"
+            
+        )
+        '''
+
+        cursor.execute(peticion)
     
     conexion.commit()
     conexion.close()
