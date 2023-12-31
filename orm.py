@@ -159,6 +159,10 @@ def guardarPersonas():
     cursor.execute('''
             DELETE FROM jugadores
             ''')
+    cursor.execute('''
+            DELETE FROM recogible
+            ''')
+    
     conexion.commit()
     for persona in personas:
         cursor.execute('''
@@ -217,10 +221,10 @@ try:
     conexion = sqlite3.connect("jugadores.sqlite3")
     cursor = conexion.cursor()
 
-    cursor.execute('''SELECT *
-                      FROM jugadores
-                                     
-                      ''')
+    cursor.execute('''
+            SELECT *
+            FROM jugadores
+            ''')
     while True:
         fila = cursor.fetchone()
         if fila is None:
@@ -240,14 +244,32 @@ try:
         persona.entidaddescanso = fila[11]
         persona.experiencia = fila[12]
         persona.entidadexperiencia = fila[13]
-        personas.append(persona)
+        
+
+        cursor2 = conexion.cursor()
+        cursor.execute('''
+            SELECT *
+            FROM recogible
+            WHERE persona = '''+persona.entidad+'''
+            ''')
+        while True:
+            fila2 = cursor2.fetchone()
+            if fila2 is None:
+                break
+            nuevorecogible = Recogible()
+            nuevorecogible.posx = fila2[2]
+            nuevorecogible.posy = fila2[3]
+            nuevorecogible.color = fila2[4]
+            persona.inventario.append(nuevorecogible)
+            personas.append(persona)
         
     conexion.close()   
-except:
-    print("error al leer base de datos")
+except sqlite3.Error as error:
+    print("error al leer base de datos", error)
 #En la colección introduzco instancias de persoans
+    print(len(personas))
 if len(personas) == 0:
-    numeropersonas = 300
+    numeropersonas = 500
     for i in range(0, numeropersonas):
         personas.append(Persona())
 
