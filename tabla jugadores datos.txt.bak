@@ -14,14 +14,3 @@ CREATE TABLE "jugadores" (
 	"experiencia"	NUMERIC,
 	"entidadexperiencia"	TEXT
 )
-
-
-CREATE TABLE "recogible" (
-	"Identificador"	INTEGER,
-	"persona"	INTEGER,
-	"posx"	TEXT,
-	"posy"	TEXT,
-	"color"	TEXT,
-	"direccion"	NUMERIC,
-	PRIMARY KEY("Identificador" AUTOINCREMENT)
-);
